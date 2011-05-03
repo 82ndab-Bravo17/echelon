@@ -70,8 +70,29 @@ $totalRows_rs_clientbans = mysql_num_rows($rs_clientbans);
     <td>
       <?php echo $row_rs_clientbans['id']; ?>
       &nbsp;&nbsp;
+	  <?php
+	  if ($_SESSION['xlradminlevel'] == 1)
+	  {
+	  ?>
       <a href="admin/unban.php?banid=<?php echo $row_rs_clientbans['id']; ?>&pbid=<?php echo $row_rs_clientinfo['pbid']; ?>&type=<?php echo $row_rs_clientbans['type']; ?>&game=<?php echo $game; ?>">
         <img src="img/remove.gif" alt="de-activate / unban" title="de-activate / unban" width="16" height="15" border="0" align="absmiddle"></a>
+	  <?php
+	  }
+	  elseif ($_SESSION['xlradminlevel'] == 2 && $row_rs_clientbans['type'] != 'Ban')
+	  {
+	  ?>
+      <a href="admin/unban.php?banid=<?php echo $row_rs_clientbans['id']; ?>&pbid=<?php echo $row_rs_clientinfo['pbid']; ?>&type=<?php echo $row_rs_clientbans['type']; ?>&game=<?php echo $game; ?>">
+        <img src="img/remove.gif" alt="de-activate / unban" title="de-activate / unban" width="16" height="15" border="0" align="absmiddle"></a>
+	  <?php
+	  }
+	  elseif ($row_rs_clientbans['type'] != 'TempBan' && $row_rs_clientbans['type'] != 'Ban')
+	  {
+	  ?>
+      <a href="admin/unban.php?banid=<?php echo $row_rs_clientbans['id']; ?>&pbid=<?php echo $row_rs_clientinfo['pbid']; ?>&type=<?php echo $row_rs_clientbans['type']; ?>&game=<?php echo $game; ?>">
+        <img src="img/remove.gif" alt="de-activate / unban" title="de-activate / unban" width="16" height="15" border="0" align="absmiddle"></a>	
+      <?php
+	  }
+	  ?>
     </td>
     <td>
       <?php echo $row_rs_clientbans['type']; ?>

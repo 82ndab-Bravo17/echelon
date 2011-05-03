@@ -41,6 +41,8 @@ if (!empty($_GET['search'])) {
       | 
       <a href="<?php echo $path; ?>toppenalties.php?game=<?php echo $game; ?>" <?php if (ereg("/toppenalties.php$",$_SERVER["PHP_SELF"])!==FALSE) echo 'class="activegame"'; else echo 'class="navigatie"'; ?>>Toplist Penalties</a>
       | 
+	  <a href="<?php echo $path; ?>recentpenalties.php?game=<?php echo $game; ?>" <?php if (ereg("/recentpenalties.php$",$_SERVER["PHP_SELF"])!==FALSE) echo 'class="activegame"'; else echo 'class="navigatie"'; ?>>Recent Penalties</a>
+      | 
       <a href="<?php echo $path; ?>notices.php?game=<?php echo $game; ?>" <?php if (ereg("/notices.php$",$_SERVER["PHP_SELF"])!==FALSE) echo 'class="activegame"'; else echo 'class="navigatie"'; ?>>Notices list</a>
       <?php if ($chatlogger_plugin_activated == 1) { ?>
       | 

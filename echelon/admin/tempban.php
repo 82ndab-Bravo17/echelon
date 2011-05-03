@@ -1,6 +1,7 @@
 <?php include "../ctracker.php"; ?>
 <?php // Next line sets the echelon userlevel for this page. 1=superadmins - 2=admins - 3=moderators
 $requiredlevel = 2;
+require_once('../Connections/inc_config.php');
 require_once('../login/inc_authorize.php');
 require_once('../Connections/b3connect.php');
 require_once('rcon.php');
@@ -48,7 +49,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	}
 
 // Insert code to update databasefield inactive in banstable to 1
-$sql = "INSERT INTO `penalties` (`id`, `type`, `duration`, `inactive`, `admin_id`, `time_add`, `time_edit`, `time_expire`, `reason`, `keyword`, `client_id`) VALUES ('', 'TempBan', '$bantime', '0', '0', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '$timeexpire', '$reason', '', $id)";
+$sql = "INSERT IGNORE INTO `penalties` (`id`, `type`, `duration`, `inactive`, `admin_id`, `time_add`, `time_edit`, `time_expire`, `reason`, `keyword`, `client_id`) VALUES ('', 'TempBan', '$bantime', '0', '0', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '$timeexpire', '$reason', '', $id)";
 mysql_select_db($database_b3connect, $b3connect);
 mysql_query($sql, $b3connect);
 

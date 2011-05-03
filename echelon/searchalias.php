@@ -12,7 +12,7 @@ if (isset($_GET['search'])) {
   $colname_rs_aliassearch = (get_magic_quotes_gpc()) ? $_GET['search'] : addslashes($_GET['search']);
 }
 mysql_select_db($database_b3connect, $b3connect);
-$query_rs_aliassearch = sprintf("SELECT * FROM aliases WHERE `alias` like '%%%s%%'", $colname_rs_aliassearch);
+$query_rs_aliassearch = sprintf("SELECT T1.*, T2.name, T2.connections FROM aliases T1 LEFT JOIN clients T2 ON T1.client_id = T2.id WHERE `alias` like '%%%s%%'", $colname_rs_aliassearch);
 $rs_aliassearch = mysql_query($query_rs_aliassearch, $b3connect) or die(mysql_error());
 $row_rs_aliassearch = mysql_fetch_assoc($rs_aliassearch);
 $totalRows_rs_aliassearch = mysql_num_rows($rs_aliassearch);
@@ -51,6 +51,12 @@ if(!d){eval(id+"."+c);}
         <td>
           belongs to
         </td>
+		<td>
+		  #connections
+		</td>
+		<td>
+		  Current Name
+		</td>
         <td>
           # used
         </td>
@@ -71,6 +77,12 @@ if(!d){eval(id+"."+c);}
           @ 
           <?php echo $row_rs_aliassearch['client_id']; ?>
         </td>
+		<td>
+		  <?php echo $row_rs_aliassearch['connections']; ?>
+		</td>
+		<td>
+		  <?php echo $row_rs_aliassearch['name']; ?>
+		</td>
         <td>
           <?php echo $row_rs_aliassearch['num_used']; ?>
         </td>

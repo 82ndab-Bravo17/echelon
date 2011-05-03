@@ -3,6 +3,7 @@ include "ctracker.php";
 error_reporting( E_ERROR ^ E_WARNING );
 
 // Next line sets the echelon userlevel for this page. 1=superadmins - 2=admins - 3=moderators
+// Edited so that only Level 1 see User Administration
 $requiredlevel = 3;
 require_once('Connections/b3connect.php');
 require_once('Connections/wwwvalidate.php');
@@ -38,8 +39,9 @@ $totalRows_rs_links = mysql_num_rows($rs_links);
       <table width="100%" class="tabelinhoud" cellspacing="0" cellpadding="0">
         <tr>
           <td colspan="2">
-            <?php if ($colname_rs_links = 1) echo"&#8226; <a href=\"admin/users.php\">User Administration</a><br>"; ?>
-            &#8226; <a href="login/changepass.php">Change your password</a><br>
+            <?php if ($colname_rs_links = 1) echo"&#8226; <a href=\"login/changepass.php\">Change your password</a><br>"; ?>
+			<?php if ($_SESSION['xlradminlevel'] == 1) echo "&#8226; <a href=\"admin/users.php\">User Administration</a><br>"; ?>
+			&#8226; <a href="admin/admins.php">Admins List</a><br>   
             &#8226; <a href="ipcalc.php">NetBlock Calculator</a><br>
             &nbsp;<br>
           </td>

@@ -2,6 +2,7 @@
 include "ctracker.php";
 error_reporting( E_ERROR ^ E_WARNING );
 
+//Edited by 82ndAB Bravo17 to add client id search
 // Next line sets the echelon userlevel for this page. 1=superadmins - 2=admins - 3=moderators
 $requiredlevel = 3;
 require_once('Connections/b3connect.php');
@@ -57,8 +58,20 @@ $xlorder_rs_clientsearch = "DESC";
 if (isset($_GET['order'])) {
   $xlorder_rs_clientsearch = (get_magic_quotes_gpc()) ? $_GET['order'] : addslashes($_GET['order']);
 }
+
 mysql_select_db($database_b3connect, $b3connect);
-$query_rs_clientsearch = sprintf("SELECT * FROM clients WHERE name like '%%%s%%' OR guid like '%%%s%%' OR pbid like '%%%s%%' OR ip like '%%%s%%'  ORDER BY %s %s", $xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlorderby_rs_clientsearch,$xlorder_rs_clientsearch);
+
+//Added for exact match search
+if ($_GET['exact'])
+{
+//	$querylen = strlen($xlresult_rs_clientsearch)-1;
+	$xlresult_rs_clientsearch = substr($xlresult_rs_clientsearch, -$querylen);
+	$query_rs_clientsearch = sprintf("SELECT T1.*, T2.name as level FROM clients T1 LEFT JOIN groups T2 ON T1.group_bits = T2.id WHERE T1.name = '%s' OR guid = '%s' OR pbid = '%s' OR ip = '%s'  OR T1.id = '%s' ORDER BY %s %s", $xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlorderby_rs_clientsearch,$xlorder_rs_clientsearch);
+}
+else
+{
+	$query_rs_clientsearch = sprintf("SELECT T1.*, T2.name as level FROM clients T1 LEFT JOIN groups T2 ON T1.group_bits = T2.id WHERE T1.name like '%%%s%%' OR guid like '%%%s%%' OR pbid like '%%%s%%' OR ip like '%%%s%%' ORDER BY %s %s", $xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlresult_rs_clientsearch,$xlorderby_rs_clientsearch,$xlorder_rs_clientsearch);
+}
 $query_limit_rs_clientsearch = sprintf("%s LIMIT %d, %d", $query_rs_clientsearch, $startRow_rs_clientsearch, $maxRows_rs_clientsearch);
 $rs_clientsearch = mysql_query($query_limit_rs_clientsearch, $b3connect) or die(mysql_error());
 $row_rs_clientsearch = mysql_fetch_assoc($rs_clientsearch);
@@ -142,6 +155,7 @@ else{eval(id+"=window.open('"+u+"','"+id+"','"+f+"')");eval(id+".focus()");}
               [
               <a href="clients.php?game=<?php echo $game; ?>">clear search</a>
               ]
+			  Exact Match &nbsp&nbsp<input type = "checkbox" name = "exact" >
             </form>
           </td>
         </tr>
@@ -181,6 +195,14 @@ else{eval(id+"=window.open('"+u+"','"+id+"','"+f+"')");eval(id+".focus()");}
             <a href="<?php echo $navThisPage; ?>?game=<?php echo $game; ?>&orderby=group_bits&order=DESC">
               <img src="img/desc.gif" alt="descending" width="11" height="9" border="0" align="absmiddle"></a>
           </td>
+		  <td>
+		    IP Address&nbsp;
+			<a href="<?php echo $navThisPage; ?>?search=<?php echo $search; ?>&game=<?php echo $game; ?>&orderby=ip&order=ASC">
+              <img src="img/asc.gif" alt="ascending" width="11" height="9" border="0" align="absmiddle"></a>
+            &nbsp;
+            <a href="<?php echo $navThisPage; ?>?search=<?php echo $search; ?>&game=<?php echo $game; ?>&orderby=ip&order=DESC">
+              <img src="img/desc.gif" alt="descending" width="11" height="9" border="0" align="absmiddle"></a>
+          </td>			
           <td>
             connections&nbsp;
             <a href="<?php echo $navThisPage; ?>?game=<?php echo $game; ?>&orderby=connections&order=ASC">
@@ -219,7 +241,12 @@ else{eval(id+"=window.open('"+u+"','"+id+"','"+f+"')");eval(id+".focus()");}
                 echo htmlspecialchars($row_rs_clients['name']); ?></a>
             </td>
           <td>
-            <?php echo $row_rs_clients['level']; ?>
+            <?php
+				$admintype = $row_rs_clients['level'];
+                echo $admintype;?>
+          </td>
+          <td>
+            <?php echo $row_rs_clients['ip']; ?>
           </td>
           <td>
             <?php echo $row_rs_clients['connections']; ?>
@@ -322,6 +349,22 @@ else{eval(id+"=window.open('"+u+"','"+id+"','"+f+"')");eval(id+".focus()");}
               <img src="img/desc.gif" alt="descending" width="11" height="9" border="0" align="absmiddle"></a>
           </td>
           <td>
+            level&nbsp;
+            <a href="<?php echo $navThisPage; ?>?game=<?php echo $game; ?>&orderby=group_bits&order=ASC">
+              <img src="img/asc.gif" alt="ascending" width="11" height="9" border="0" align="absmiddle"></a>
+            &nbsp;
+            <a href="<?php echo $navThisPage; ?>?game=<?php echo $game; ?>&orderby=group_bits&order=DESC">
+              <img src="img/desc.gif" alt="descending" width="11" height="9" border="0" align="absmiddle"></a>
+          </td>
+		  <td>
+		    IP Address&nbsp;
+			<a href="<?php echo $navThisPage; ?>?search=<?php echo $search; ?>&game=<?php echo $game; ?>&orderby=ip&order=ASC">
+              <img src="img/asc.gif" alt="ascending" width="11" height="9" border="0" align="absmiddle"></a>
+            &nbsp;
+            <a href="<?php echo $navThisPage; ?>?search=<?php echo $search; ?>&game=<?php echo $game; ?>&orderby=ip&order=DESC">
+              <img src="img/desc.gif" alt="descending" width="11" height="9" border="0" align="absmiddle"></a>
+          </td>			
+          <td>
             connections&nbsp;
             <a href="<?php echo $navThisPage; ?>?search=<?php echo $search; ?>&game=<?php echo $game; ?>&orderby=connections&order=ASC">
               <img src="img/asc.gif" alt="ascending" width="11" height="9" border="0" align="absmiddle"></a>
@@ -355,6 +398,14 @@ else{eval(id+"=window.open('"+u+"','"+id+"','"+f+"')");eval(id+".focus()");}
             <a href="clientdetails.php?game=<?php echo $game; ?>&id=<?php echo $row_rs_clientsearch['id']; ?>">
               <?php echo htmlspecialchars($row_rs_clientsearch['name']); ?></a>
           </td>
+          <td>
+            <?php
+                $admintype = $row_rs_clientsearch['level'];
+                echo $admintype;?>
+          </td>
+		  <td>
+			<?php echo $row_rs_clientsearch['ip']; ?>
+		  </td>
           <td>
             <?php echo $row_rs_clientsearch['connections']; ?>
           </td>
