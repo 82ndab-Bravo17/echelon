@@ -25,6 +25,16 @@ $query_rs_aliases = sprintf("SELECT * FROM aliases WHERE client_id = %s ORDER BY
 $rs_aliases = mysql_query($query_rs_aliases, $b3connect) or die(mysql_error());
 $row_rs_aliases = mysql_fetch_assoc($rs_aliases);
 $totalRows_rs_aliases = mysql_num_rows($rs_aliases);
+
+$colname_rs_ipaliases = "0";
+if (isset($_GET['id'])) {
+  $colname_rs_ipaliases = (get_magic_quotes_gpc()) ? $_GET['id'] : addslashes($_GET['id']);
+}
+mysql_select_db($database_b3connect, $b3connect);
+$query_rs_ipaliases = sprintf("SELECT * FROM ipaliases WHERE client_id = %s ORDER BY num_used DESC", $colname_rs_ipaliases);
+$rs_ipaliases = mysql_query($query_rs_ipaliases, $b3connect) or die(mysql_error());
+$row_rs_ipaliases = mysql_fetch_assoc($rs_ipaliases);
+$totalRows_rs_ipaliases = mysql_num_rows($rs_ipaliases);
 ?>
 <html>
   <head>
@@ -131,6 +141,25 @@ $totalRows_rs_aliases = mysql_num_rows($rs_aliases);
               x)</i>
             &nbsp;&nbsp;-&nbsp;&nbsp;
             <?php } while ($row_rs_aliases = mysql_fetch_assoc($rs_aliases)); ?>
+          </td>
+        </tr>
+      </table>
+      <table width="100%" border="0" cellpadding="1" cellspacing="1" class="tabelinhoud">
+        <tr>
+          <td>
+            <br /><strong>Used IP Addresses:</strong></td>
+          </td>
+        </tr>
+        <tr>
+          <td class="tabelinhoud">
+            <?php do { ?>
+            <?php echo htmlspecialchars($row_rs_ipaliases['ip']); ?>
+            &nbsp;
+            <i>(
+              <?php echo $row_rs_ipaliases['num_used']; ?>
+              x)</i>
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            <?php } while ($row_rs_ipaliases = mysql_fetch_assoc($rs_ipaliases)); ?>
           </td>
         </tr>
       </table>
