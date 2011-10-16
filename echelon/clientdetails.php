@@ -1,7 +1,7 @@
 <?php
 include "ctracker.php";
 error_reporting( E_ERROR ^ E_WARNING );
-
+//Edited by 82ndAB Bravo17 to add/remove password when changing level
 // Next line sets the echelon userlevel for this page. 1=superadmins - 2=admins - 3=moderators
 $requiredlevel = 3;
 require_once('Connections/b3connect.php');
@@ -26,7 +26,6 @@ $query_rs_aliases = sprintf("SELECT * FROM aliases WHERE client_id = %s ORDER BY
 $rs_aliases = mysql_query($query_rs_aliases, $b3connect) or die(mysql_error());
 $row_rs_aliases = mysql_fetch_assoc($rs_aliases);
 $totalRows_rs_aliases = mysql_num_rows($rs_aliases);
-
 $colname_rs_ipaliases = "0";
 if (isset($_GET['id'])) {
   $colname_rs_ipaliases = (get_magic_quotes_gpc()) ? $_GET['id'] : addslashes($_GET['id']);
@@ -97,7 +96,7 @@ $totalRows_rs_ipaliases = mysql_num_rows($rs_ipaliases);
         </tr>
         <tr class="tabelinhoud">
           <td align="right" class="tabelkop">
-            group_bits
+            group_bits(Level)
           </td>
           <td>
             (
@@ -108,7 +107,10 @@ $totalRows_rs_ipaliases = mysql_num_rows($rs_ipaliases);
                     }
                      else
                     {
-                     echo $row_rs_clientinfo['level'];
+					 $admintype = $row_rs_clientinfo['level'];
+					 if ($admintype == 'Admin') $admintype = 'Admin - MP';
+					 if ($admintype == 'Full Admin') $admintype = 'Full Admin - MPI';
+                     echo $admintype;
                     }
             ?>
             )
@@ -175,10 +177,15 @@ $totalRows_rs_ipaliases = mysql_num_rows($rs_ipaliases);
 			<input type="submit" name="submit1" value="update">
 		</form>
 	  </td>
+
 	  <td class="tabelkop" align="right">
 	  	Banning
 	  </td>
 	  <td>
+	  <?php
+	  if ($_SESSION['xlradminlevel'] <= 2)
+	  {
+	  ?>
 	  <form name="tempbaninput" method="Post" Action="admin/tempban.php?id=<?php echo $row_rs_clientinfo['id']; ?>&pbid=<?php echo $row_rs_clientinfo['pbid']; ?>&clientname=<?php echo urlencode($row_rs_clientinfo['name']); ?>&client_ip=<?php echo $row_rs_clientinfo['ip']; ?>&game=<?php echo $game;?>">
       <input type="text" value="Banned by an Echelon WebAdmin" size="50" Maxlength="50" Name="reason">
     	<input type="text" value="Number" size="9" Maxlength="9" Name="bantime">
@@ -188,31 +195,49 @@ $totalRows_rs_ipaliases = mysql_num_rows($rs_ipaliases);
       	<option>Days</option>           	
     	</select>
       <input type="submit" name="submit2" value="tempban" class="button">
-    </form>
-
+      </form>
+	  <?php
+	  }
+	  if ($_SESSION['xlradminlevel'] == 1)
+	  {
+	  ?>
 	  <form name="baninput" method="Post" Action="admin/ban.php?id=<?php echo $row_rs_clientinfo['id']; ?>&pbid=<?php echo $row_rs_clientinfo['pbid']; ?>&clientname=<?php echo urlencode($row_rs_clientinfo['name']); ?>&client_ip=<?php echo $row_rs_clientinfo['ip']; ?>&game=<?php echo $game;?>">
       <input type="text" value="Banned by an Echelon WebAdmin" size="50" Maxlength="50" Name="reason">
       <input type="submit" value="permban" class="button" style="background: #B9A489 url(img/insta_ban.gif) no-repeat top left; padding-left:15px">
-    </form>
+      </form>
+	  <?php
+	  }
+	  ?>
 	  </td>
+
 	</tr>
 	<tr class="tabelinhoud">
-	  <td align="right"class="tabelkop">Level</td>
+	  <td align="right"class="tabelkop">Change Level</td>
 	  <td colspan=3>
+	  <?php 
+	  if ($_SESSION['xlradminlevel'] == 1)
+	  {
+	  ?>
 	  <form name=adminaddition method="Post" Action="admin/adminadd.php?id=<?php echo $row_rs_clientinfo['id']; ?>">
-		  ID Level
+		  Level
         <SELECT name="level">
             	<option value="0"<?=($row_rs_clientinfo['group_bits']=='0')?' selected':'';?>>unregistered</option>
-            	<option value="1"<?=($row_rs_clientinfo['group_bits']=='1')?' selected':'';?>>user</option>
-            	<option value="2"<?=($row_rs_clientinfo['group_bits']=='2')?' selected':'';?>>regular</option>
-            	<option value="8"<?=($row_rs_clientinfo['group_bits']=='8')?' selected':'';?>>moderator</option>   
-              <option value="16"<?=($row_rs_clientinfo['group_bits']=='16')?' selected':'';?>>admin</option>
-              <option value="32"<?=($row_rs_clientinfo['group_bits']=='32')?' selected':'';?>>full admin</option>
-              <option value="64"<?=($row_rs_clientinfo['group_bits']=='64')?' selected':'';?>>senior admin</option>
+            	<option value="1"<?=($row_rs_clientinfo['group_bits']=='1')?' selected':'';?>>user(1)</option>
+            	<option value="2"<?=($row_rs_clientinfo['group_bits']=='2')?' selected':'';?>>regular(2)</option>
+            	<option value="8"<?=($row_rs_clientinfo['group_bits']=='8')?' selected':'';?>>moderator(20)</option>   
+              <option value="16"<?=($row_rs_clientinfo['group_bits']=='16')?' selected':'';?>>admin - MP(40)</option>
+              <option value="32"<?=($row_rs_clientinfo['group_bits']=='32')?' selected':'';?>>full admin - MPI(60)</option>
+              <option value="64"<?=($row_rs_clientinfo['group_bits']=='64')?' selected':'';?>>senior admin(80)</option>
+			    <option value="128"<?=($row_rs_clientinfo['group_bits']=='128')?' selected':'';?>>super admin(100)</option>
    	    </select>
+			<input type="text" value="Game Password" Name="gpassword">
 			<input type="hidden" value="<?php echo $game; ?>" Name="game">
 			<input type="submit" name="submit3" value="Change Level">
 		</form>
+		<?php
+		}
+
+		?>
             <?php } // end of the hidden admin level information ?>
 	  </td>
   </tr>
