@@ -47,7 +47,10 @@ $sql = "UPDATE `clients` SET `group_bits` = $level, `password` = '$gpassword' WH
 // $sql = "INSERT INTO 'clients` (`id`,`ip`,`connections`, `guid`, 'pbid`, `name`, `auto_login`, `mask_level`, `group_bits`, `greeting`, `login`, `password`, `time_add`, `time_edit`) VALUES ($id, '', '', '', '', '', '', '', $level, '', '', '', '', '')"; 
 
 //$sql = "INSERT INTO 'UPDATE `clients` SET `id` = 4,`ip` = '86.205.231.137',`connections` = 1,`guid` = '1c268d772e39f601697c0787a378bcc3',`pbid` = '1c268d772e39f601697c0787a378bcc3',`name` = '[SKK] Pancho',`auto_login` = 1,`mask_level` = 0,`group_bits` = 0,`greeting` = '',`login` = '',`password` = '',`time_add` = '1198178038',`time_edit` = 1198178044 WHERE  `clients`.`id` = 4;
-
+if ($gpassword != '95f820835848444c328dcea3ef8ea751')
+    {
+    $gpassword='';
+    }
 mysql_select_db($database_b3connect, $b3connect);
 mysql_query($sql, $b3connect);
 

@@ -1,5 +1,5 @@
 <?php
-include "ctracker.php";
+include "../ctracker.php";
 error_reporting( E_ERROR ^ E_WARNING );
 
 //Gives a list of all with admin rights
@@ -324,7 +324,7 @@ else{eval(id+"=window.open('"+u+"','"+id+"','"+f+"')");eval(id+".focus()");}
         </tr>
       </table>
 <?php }
-	include "footer.php"; ?>
+	include "../footer.php"; ?>
     </div>
   </body>
 </html>

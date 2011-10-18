@@ -243,6 +243,8 @@ else{eval(id+"=window.open('"+u+"','"+id+"','"+f+"')");eval(id+".focus()");}
           <td>
             <?php
 				$admintype = $row_rs_clients['level'];
+				if ($admintype == 'Admin') $admintype = 'Admin - MP';
+				if ($admintype == 'Full Admin') $admintype = 'Full Admin - MPI';
                 echo $admintype;?>
           </td>
           <td>
@@ -401,6 +403,8 @@ else{eval(id+"=window.open('"+u+"','"+id+"','"+f+"')");eval(id+".focus()");}
           <td>
             <?php
                 $admintype = $row_rs_clientsearch['level'];
+                if ($admintype == 'Admin') $admintype = 'Admin - MP';
+                if ($admintype == 'Full Admin') $admintype = 'Full Admin - MPI';
                 echo $admintype;?>
           </td>
 		  <td>
