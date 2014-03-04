@@ -7,7 +7,7 @@ if (isset($_GET['id'])) {
   $colname_rs_clientchat = (get_magic_quotes_gpc()) ? $_GET['id'] : addslashes($_GET['id']);
 }
 mysql_select_db($database_b3connect, $b3connect);
-$query_rs_clientchat = sprintf('SELECT  * FROM `chatlog` WHERE `client_id` = %s ORDER BY `msg_time` DESC LIMIT 0, 50', $colname_rs_clientchat);
+$query_rs_clientchat = sprintf('SELECT  * FROM `chatlog` WHERE `client_id` = %s ORDER BY `msg_time` DESC', $colname_rs_clientchat);
 $rs_clientchat = mysql_query($query_rs_clientchat, $b3connect) or die(mysql_error());
 $row_rs_clientchat = mysql_fetch_assoc($rs_clientchat);
 $totalRows_rs_clientchat = mysql_num_rows($rs_clientchat);
@@ -28,17 +28,42 @@ $totalRows_rs_clientchat = mysql_num_rows($rs_clientchat);
     
     <td width="200">
       <?php echo $row_rs_clientchat['client_name']; ?> says to 
-      <?php 
-        switch ($row_rs_clientchat['msg_type']) {
-          case 'ALL':
-            echo 'all';
+      <?php
+        $msgtype = trim($row_rs_clientchat['msg_type']);
+        $msglength = strlen($msgtype);
+        switch (substr($msgtype, -2)) {
+          case 'LL':
+            if ($msgtype == 'ALL')
+              {
+                echo 'all';
+              }
+            else
+              {
+                 echo 'all ('.substr($msgtype, 0, $msglength-4).')';
+              }
           break;
-          case 'TEAM':
-            echo 'team '.$row_rs_clientchat['client_team'];
+          case 'AM':
+            if ($msgtype == 'TEAM')
+              {
+                echo 'team '.$row_rs_clientchat['client_team'];
+              }
+            else
+              {
+                 echo 'team '.$row_rs_clientchat['client_team'].' ('.substr($msgtype, 0, $msglength-5).')';
+              }
           break;
           case 'PM':
-            echo '('.$row_rs_clientchat['target_id'] . ') ';
-            echo $row_rs_clientchat['target_name'] ;
+            if ($msgtype == 'PM')
+              {
+                echo '('.$row_rs_clientchat['target_id'] . ') ';
+                echo htmlentities($row_rs_clientchat['target_name']) . '</a>';
+              }
+            else
+              {
+                echo '('.$row_rs_clientchat['target_id'] . ') ';
+                echo htmlentities($row_rs_clientchat['target_name']) . '</a>';
+                echo ' ('.substr($msgtype, 0, $msglength-3).')';
+              }
           break;
         }; 
       ?>

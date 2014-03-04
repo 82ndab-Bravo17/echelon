@@ -32,17 +32,42 @@ $totalRows_rs_clientchat = mysql_num_rows($rs_clientchat);
     </td>
     <td>
       <?php echo htmlentities($row_rs_clientchat['client_name']); ?> says to 
-      <?php 
-        switch ($row_rs_clientchat['msg_type']) {
-          case 'ALL':
-            echo 'all';
+      <?php
+        $msgtype = trim($row_rs_clientchat['msg_type']);
+        $msglength = strlen($msgtype);
+        switch (substr($msgtype, -2)) {
+          case 'LL':
+            if ($msgtype == 'ALL')
+              {
+                echo 'all';
+              }
+            else
+              {
+                 echo 'all ('.substr($msgtype, 0, $msglength-4).')';
+              }
           break;
-          case 'TEAM':
-            echo 'team '.$row_rs_clientchat['client_team'];
+          case 'AM':
+            if ($msgtype == 'TEAM')
+              {
+                echo 'team '.$row_rs_clientchat['client_team'];
+              }
+            else
+              {
+                 echo 'team '.$row_rs_clientchat['client_team'].' ('.substr($msgtype, 0, $msglength-5).')';
+              }
           break;
           case 'PM':
-            echo '<a href="' . $path . 'clientdetails.php?game=' . $game . '&id=' . $row_rs_clientchat['target_id'] . '&game='.$game.'">';
-            echo htmlentities($row_rs_clientchat['target_name']) . '</a>';
+            if ($msgtype == 'PM')
+              {
+                echo '<a href="' . $path . 'clientdetails.php?game=' . $game . '&id=' . $row_rs_clientchat['target_id'] . '&game='.$game.'">';
+                echo htmlentities($row_rs_clientchat['target_name']) . '</a>';
+              }
+            else
+              {
+                echo '<a href="' . $path . 'clientdetails.php?game=' . $game . '&id=' . $row_rs_clientchat['target_id'] . '&game='.$game.'">';
+                echo htmlentities($row_rs_clientchat['target_name']) . '</a>';
+                echo ' ('.substr($msgtype, 0, $msglength-3).')';
+              }
           break;
         }; 
       ?>

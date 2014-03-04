@@ -31,7 +31,7 @@ $curlevel = $row_currentinfo['group_bits'];
 $curpassword = $row_currentinfo['password'];
 if ($level > 7)
 	{
-	if ($curlevel > 7)
+	if ( ($curlevel > 7) AND (($gpassword == '') OR ($gpassword == '95f820835848444c328dcea3ef8ea751')) )
 		{
 		$gpassword = $curpassword;
 		}
